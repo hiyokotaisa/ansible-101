@@ -37,7 +37,7 @@
 - バージョン管理ツール(VCS)を使用した変更管理
 ---
 # Ansible
-<img src="https://www.ansible.com/hubfs/2016_Images/Assets/Ansible-Mark-Large-RGB-Mango.png?t=1516991903140" width="200px">  
+<img src="https://www.ansible.com/hubfs/2016_Images/Assets/Ansible-Mark-Large-RGB-Mango.png?t=1516991903140" width="200px" style="border: 0;">  
 ---
 ## Ansibleとは？
 - Red Hat社が開発する構成管理ツール
