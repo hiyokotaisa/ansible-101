@@ -97,8 +97,8 @@ web[01:10]
 ## Module
 - Ansibleから実行するコマンド郡
 - OS操作やファイル操作等多種多様なModule
-- 詳細はここから
-[Module Index — Ansible Documentation]:http://docs.ansible.com/ansible/latest/modules_by_category.html
+- 詳細はここから  
+[Module Index — Ansible Documentation](http://docs.ansible.com/ansible/latest/modules_by_category.html)
 ---
 ## Gather factsの情報を見てみよう
 - setupモジュールを使用することで確認できる
