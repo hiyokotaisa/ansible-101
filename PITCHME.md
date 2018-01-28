@@ -153,7 +153,6 @@ $ ansible-doc -l
 ---
 ### Role サンプル
 ```
----
 # This playbook contains common plays that will be run on all nodes.
 
 - name: Install ntp
