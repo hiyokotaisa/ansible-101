@@ -1,10 +1,10 @@
-# 今日からはじめるAnsible
+# いまからはじめるAnsible
 @hiyoko_taisa
 ---
 ## おしながき
-- Infrastructure as Code?
-- 自動構成ツール?
-- Ansible?
+- いままでのインフラ
+- Infrastructure as Codeとは?
+- Ansibleとは？
 - ちょっとしたデモ
 ---
 ## お前は誰だ
@@ -150,7 +150,6 @@ $ ansible-doc -l
 - 各セットアップ単位(e.g. nginxのセットアップ)で切り出ることが多い
 - Roleに切り出すことで、別の環境でも再利用しやすくなる
 ---
----
 ## Roleサンプル(common)
 [ansible-examples/lamp_simple_rhel7/roles/common/tasks/main.yml](https://github.com/ansible/ansible-examples/blob/master/lamp_simple_rhel7/roles/common/tasks/main.yml)
 ```
@@ -191,6 +190,38 @@ includefile /etc/ntp/crypto/pw
 keys /etc/ntp/keys
 ```
 ---
+# 実際に触ってみよう
+---
+## Ansibleのインストール
+- yum install ansible
+- pip2 install ansible
+- Sourceから
+---
+## Ansibleの動作確認
+```
+$ ansible localhost -m ping
+```
+Warningが出ても想定通りの動作なので問題なし
+---
+## Dockerのインストール
+```
+# yum install docker
+```
+---
+## docker環境のセットアップ
+```
+$ docker pull centos:latest
+$ docker run -i -t -d ubuntu /bin/bash
+$ docker run -i -t -d ubuntu /bin/bash
+---
+## Inventoryを書いてみよう
+```
+[test_servers]
+test01
+test02
+```
+---
+
 ## Gather factsの情報を見てみよう
 - setupモジュールを使用することで確認できる
 ```
