@@ -121,7 +121,6 @@ $ ansible-doc -l
 ## Playbook サンプル
 [ansible-example/lamp_simple_rhel7](https://github.com/ansible/ansible-examples/blob/master/lamp_simple_rhel7/site.yml)
 ```
----
 # This playbook deploys the whole application stack in this site.
 
 - name: apply common configuration to all nodes
