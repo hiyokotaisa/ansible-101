@@ -119,7 +119,7 @@ $ ansible-doc -l
 - 細かなRole単位に細分化することが多い
 ---
 ## Playbook サンプル
-[ansible-example/lamp_simple_rhel7](https://github.com/ansible/ansible-examples/blob/master/lamp_simple_rhel7/site.yml)
+[ansible-example/lamp_simple_rhel7/site.yml](https://github.com/ansible/ansible-examples/blob/master/lamp_simple_rhel7/site.yml)
 ```
 # This playbook deploys the whole application stack in this site.
 
@@ -145,13 +145,15 @@ $ ansible-doc -l
     - db
 ```
 ---
+---
 ## Role
 - Playbookを切り出したもの
 - 各セットアップ単位(e.g. nginxのセットアップ)で切り出ることが多い
 - Roleに切り出すことで、別の環境でも再利用しやすくなる
 ---
 ---
-### Role サンプル
+## Roleサンプル(common)
+[ansible-examples/lamp_simple_rhel7/roles/common/tasks/main.yml](https://github.com/ansible/ansible-examples/blob/master/lamp_simple_rhel7/roles/common/tasks/main.yml)
 ```
 # This playbook contains common plays that will be run on all nodes.
 
@@ -174,6 +176,20 @@ $ ansible-doc -l
 - name: Start the ntp service
   service: name=ntpd state=started enabled=yes
   tags: ntp
+```
+---
+## template(ntp.conf.j2)
+```
+driftfile /var/lib/ntp/drift
+
+restrict 127.0.0.1 
+restrict -6 ::1
+
+server {{ ntpserver }}
+
+includefile /etc/ntp/crypto/pw
+
+keys /etc/ntp/keys
 ```
 ---
 ## Gather factsの情報を見てみよう
