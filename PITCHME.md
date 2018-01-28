@@ -193,6 +193,7 @@ keys /etc/ntp/keys
 # 実際に触ってみよう
 ---
 ## Ansibleのインストール
+今回はyumでinstallする
 - yum install ansible
 - pip2 install ansible
 - Sourceから
@@ -210,21 +211,56 @@ Warningが出ても想定通りの動作なので問題なし
 ---
 ## docker環境のセットアップ
 ```
-$ docker pull centos:latest
-$ docker run -i -t -d ubuntu /bin/bash
-$ docker run -i -t -d ubuntu /bin/bash
+# sudo systemctl start docker
+# docker pull centos:latest
+
+# docker run --privileged  --name test01 -i -t -d centos /sbin/init
+# docker run --privileged  --name test02 -i -t -d centos /sbin/init
+# doker ps
+```
 ---
 ## Inventoryを書いてみよう
+./hosts
 ```
-[test_servers]
+[testservers]
 test01
 test02
 ```
 ---
-
-## Gather factsの情報を見てみよう
-- setupモジュールを使用することで確認できる
-```
-$ ansible all -m setup
+## Playbookを書いてみよう
+./site.yml
 ```
 ---
+---
+- name: install httpd
+  hosts: testservers
+  connection: docker
+  tasks:
+    - name: Install httpd
+      yum:
+        name: httpd
+        state: present
+
+    - name: Start httpd
+      systemd:
+        name: httpd
+        state: started
+        enabled: yes
+```
+---
+## 実行してみよう
+```
+# ansible-playbook -i hosts site.yml --check
+
+# ansible-playbook -i hosts site.yml
+```
+---
+## 確認してみよう
+```
+# docker exec -it test01 /bin/bash
+# systemctl status httpd
+```
+---
+# Ansibleの旅はこれからだ！
+---
+# END
