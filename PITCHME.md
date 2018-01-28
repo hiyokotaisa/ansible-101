@@ -96,3 +96,4 @@ test-02
 ```
 $ ansible all -m setup
 ```
+---
