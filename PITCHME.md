@@ -85,11 +85,19 @@
 - Ansibleが管理する環境の接続情報
 - 複数の環境をグループ分けして定義することが可能
 - IaaSからAPI経由で動的にInventoryを生成する機能もある(Dynamic Inventory)
+---
+## Inventory サンプル
 ```
 [test_servers]
-test-01
-test-02
+test01
+test02
+[web_servers]
+web[01:10]
 ```
+---
+## Module
+- Ansibleから実行するコマンド郡
+- OS操作やファイル操作等多種多様なModule
 ---
 ## Gather factsの情報を見てみよう
 - setupモジュールを使用することで確認できる
