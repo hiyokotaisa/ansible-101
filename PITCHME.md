@@ -24,6 +24,13 @@
    
 **スタティックなインフラ**
 ---
+## 今までの手法
+- エンジニアが手作業で構築
+- 場合によってシェルスクリプトなどで自動化
+- 手動でテスト  
+   
+→スタティックなインフラのやり方
+----
 ## サーバー仮想化の台頭
 - デプロイにかかる時間がさらに短く
 - 大量のサーバーが生み出されるようになった
@@ -33,13 +40,6 @@
 - サーバの増減も柔軟になった  
    
 **ダイナミックなインフラに**
----
-## 今までの手法
-- エンジニアが手作業で構築
-- 場合によってシェルスクリプトなどで自動化
-- 手動でテスト  
-   
-→長いリードタイムが許される時代のやり方
 ---
 ## その結果
 - 構築・運用対象が爆発的に増え、環境も多様化
@@ -61,18 +61,27 @@
    
 →どんどん自動化が怖くなる悪循環
 ---
-# Infastructure as Code
+# Infrastructure as Code
 ---
 ## Infrastructure as Codeとは
 - インフラをコードで定義
 - Devで培った手法をインフラにも適用できる
 - バージョン管理ツール(VCS)を使用した変更管理
+- 冪等性を保った変更
+---
+---
+## 冪(べき)等性とは
+- **何度実行しても常に同じ結果になる**
+- 同じ環境を同じコードで何度でも構築可能になる
 ---
 # Ansible
 ---
 ## Ansibleとは？
 - Red Hat社が開発する構成管理ツール
 - 2018年1月時点の安定版は2.4
+- 多種多様な環境のセットアップが可能
+- エージェントレス
+- YAML形式のPlaybookで構成を定義
 ---
 ## Ansibleの構成要素
 - Inventory
@@ -98,7 +107,80 @@ web[01:10]
 - Ansibleから実行するコマンド郡
 - OS操作やファイル操作等多種多様なModule
 - 詳細はここから  
-[Module Index — Ansible Documentation](http://docs.ansible.com/ansible/latest/modules_by_category.html)
+```
+$ ansible-doc -l
+```
+---
+---
+## Moduleの特徴
+- 実行前に現在の状態を調査する
+- 変更が必要な場合にのみ変更処理を実行
+- command/shell モジュールなどは冪等性が担保されない
+---
+## Playbook
+- Ansibleにおける「手順書」
+- YAML形式で記述
+- 細かなRole単位に細分化することが多い
+---
+## Playbook サンプル
+[ansible-example/lamp_simple_rhel7](https://github.com/ansible/ansible-examples/blob/master/lamp_simple_rhel7/site.yml)
+```
+---
+# This playbook deploys the whole application stack in this site.
+
+- name: apply common configuration to all nodes
+  hosts: all
+  remote_user: root
+
+  roles:
+    - common
+
+- name: configure and deploy the webservers and application code
+  hosts: webservers
+  remote_user: root
+
+  roles:
+    - web
+
+- name: deploy MySQL and configure the databases
+  hosts: dbservers
+  remote_user: root
+
+  roles:
+    - db
+```
+---
+## Role
+- Playbookを切り出したもの
+- 各セットアップ単位(e.g. nginxのセットアップ)で切り出ることが多い
+- Roleに切り出すことで、別の環境でも再利用しやすくなる
+---
+---
+### Role サンプル
+```
+---
+# This playbook contains common plays that will be run on all nodes.
+
+- name: Install ntp
+  yum: name=ntp state=present
+  tags: ntp
+
+- name: Install common dependencies
+  yum: name={{ item }} state=installed
+  with_items:
+   - libselinux-python
+   - libsemanage-python
+   - firewalld
+
+- name: Configure ntp file
+  template: src=ntp.conf.j2 dest=/etc/ntp.conf
+  tags: ntp
+  notify: restart ntp
+
+- name: Start the ntp service
+  service: name=ntpd state=started enabled=yes
+  tags: ntp
+```
 ---
 ## Gather factsの情報を見てみよう
 - setupモジュールを使用することで確認できる
