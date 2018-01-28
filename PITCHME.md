@@ -145,7 +145,6 @@ $ ansible-doc -l
     - db
 ```
 ---
----
 ## Role
 - Playbookを切り出したもの
 - 各セットアップ単位(e.g. nginxのセットアップ)で切り出ることが多い
