@@ -1,10 +1,10 @@
-# 今日からはじめるAnsible
+# いまからはじめるAnsible
 @hiyoko_taisa
 ---
 ## おしながき
-- Infrastructure as Code?
-- 自動構成ツール?
-- Ansible?
+- いままでのインフラ
+- Infrastructure as Codeとは?
+- Ansibleとは？
 - ちょっとしたデモ
 ---
 ## お前は誰だ
@@ -150,7 +150,6 @@ $ ansible-doc -l
 - 各セットアップ単位(e.g. nginxのセットアップ)で切り出ることが多い
 - Roleに切り出すことで、別の環境でも再利用しやすくなる
 ---
----
 ## Roleサンプル(common)
 [ansible-examples/lamp_simple_rhel7/roles/common/tasks/main.yml](https://github.com/ansible/ansible-examples/blob/master/lamp_simple_rhel7/roles/common/tasks/main.yml)
 ```
@@ -191,9 +190,77 @@ includefile /etc/ntp/crypto/pw
 keys /etc/ntp/keys
 ```
 ---
-## Gather factsの情報を見てみよう
-- setupモジュールを使用することで確認できる
+# 実際に触ってみよう
+---
+## Ansibleのインストール
+今回はyumでinstallする
+- yum install ansible
+- pip2 install ansible
+- Sourceから
+---
+## Ansibleの動作確認
 ```
-$ ansible all -m setup
+$ ansible localhost -m ping
+```
+Warningが出ても想定通りの動作なので問題なし
+---
+## Dockerのインストール
+```
+# yum install docker
 ```
 ---
+## docker環境のセットアップ
+```
+# sudo systemctl start docker
+# docker pull centos:latest
+
+# docker run --privileged  --name test01 -i -t -d centos /sbin/init
+# docker run --privileged  --name test02 -i -t -d centos /sbin/init
+# doker ps
+```
+---
+## Inventoryを書いてみよう
+./hosts
+```
+[testservers]
+test01
+test02
+```
+---
+## Playbookを書いてみよう
+./site.yml
+```
+---
+---
+- name: install httpd
+  hosts: testservers
+  connection: docker
+  tasks:
+    - name: Install httpd
+      yum:
+        name: httpd
+        state: present
+
+    - name: Start httpd
+      systemd:
+        name: httpd
+        state: started
+        enabled: yes
+```
+---
+## 実行してみよう
+```
+# ansible-playbook -i hosts site.yml --check
+
+# ansible-playbook -i hosts site.yml
+```
+---
+## 確認してみよう
+```
+# docker exec -it test01 /bin/bash
+# systemctl status httpd
+```
+---
+# Ansibleの旅はこれからだ！
+---
+# END
